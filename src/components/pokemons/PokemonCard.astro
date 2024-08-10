@@ -2,19 +2,36 @@
 interface Props {
   name: string;
   url:  string;
+  pokemonId: string;
+  isolated?: boolean;
 }
 
-const { name, url } = Astro.props;
+const { name, url,pokemonId, isolated = false } = Astro.props;
 const id = url.split("/")[6];
 ---
 <a
+  id={pokemonId}
   href={`/pokemons/${name}`}
-  class="flex flex-col w-full rounded-lg border border-slate-700 bg-slate-100 p-4 shadow-lg hover:border-slate-900 hover:bg-slate-400"
+  class:list={[
+    "flex items-center flex-col justify-center rounded-lg border border-slate-700 transition-colors duration-1000 bg-slate-100 p-4 ",
+    isolated && "bg-transparent border-none"
+  ]}
 >
+  
   <img
+  transition:name={`${name}-image`}
     src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
     alt={name}
-    class="w-full h-full object-cover"
+    class:list={
+      [
+        " object-contain",
+        isolated && "w-full h-full",
+        !isolated && "w-24 h-24"
+      ]
+    }
   />
-  <h2 class="mt-2 text-center text-lg font-bold capitalize text-slate-900">{name}</h2>
+  <h2 class:list={[
+    "mt-2 text-center text-lg font-bold capitalize text-slate-900",
+    isolated && "text-white text-3xl"
+    ]}>{name}</h2>
 </a>

@@ -9,9 +9,9 @@ export const getStaticPaths = ( async() => {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
   const { results } = await res.json() as PokemonListResponse;
 
-  const paths = results.map(({name, url}) => ({
+  const paths = results.map(({name, url}, index) => ({
     params: {
-      name,
+      id: index + 1,
     },
     props: {
       name,
@@ -22,7 +22,7 @@ export const getStaticPaths = ( async() => {
   return paths;
 }) satisfies GetStaticPaths;
 
-const { name } = Astro.params;
+const { name } = Astro.props;
 const { url } = Astro.props;
 const id = url.split("/")[6];
 const newCry = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`

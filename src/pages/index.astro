@@ -1,4 +1,5 @@
 ---
+import EnlacesInteres from "../components/pokemons/EnlacesInteres.astro";
 import PokemonCard from "../components/pokemons/PokemonCard.astro";
 import type { PokemonListResponse } from "../interfaces/pokemon-list.response";
 import RootLayout from "../layouts/RootLayout.astro";
@@ -6,20 +7,21 @@ import RootLayout from "../layouts/RootLayout.astro";
 let title = "Astro-Pokemon";
 
 
-const res = await fetch("https://pokeapi.co/api/v2/pokemon");
+const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
 const data = (await res.json()) as PokemonListResponse;
 
 ---
 <RootLayout title={title}>
 	<h1 class="font-bold">{title}</h1>
 	<hr/>
-
+	<EnlacesInteres/>
+	<a href="/pokemons/1" class="px-4 py-2 bg-blue-500 text-white no-underline rounded cursor-pointer inline-block">Paginacion</a>
 	<section
 		aria-label="Pokemon list"
 		class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4"
 	>
 		{data.results.map((pokemon) => (
-			<PokemonCard name={pokemon.name} url={pokemon.url} />
+			<PokemonCard name={pokemon.name} url={pokemon.url} pokemonId={`${pokemon.name}`} />
 		))}
 	</section>
 </RootLayout>
