@@ -1,0 +1,75 @@
+---
+import type { GetStaticPaths } from "astro";
+import RootLayout from "../../layouts/RootLayout.astro";
+import PokemonCard from "../../components/pokemons/PokemonCard.astro";
+import type { PokemonListResponse } from "../../interfaces/pokemon-list.response";
+
+export const getStaticPaths = ( async() => {
+
+  const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
+  const { results } = await res.json() as PokemonListResponse;
+
+  const paths = results.map(({name, url}) => ({
+    params: {
+      name,
+    },
+    props: {
+      name,
+      url,
+    },
+  }));
+
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { name } = Astro.params;
+const { url } = Astro.props;
+const id = url.split("/")[6];
+const newCry = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`
+const oldCry = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/${id}.ogg`
+
+---
+
+<RootLayout
+  title={name}
+>
+  <p>{name}</p>
+  <section class="mt-10 mx-10 flex flex-col justify-center items-center">
+    <a href="/">Volver</a>
+    <p># {id}</p>
+    <div class="flex flex-col gap-4">
+      <PokemonCard 
+        name={name} 
+        url={url}
+      />
+      <div class="flex gap-4 flex-row justify-between items-center">
+        <span>
+          <label for="volume">New cry</label>
+          <audio controls class="myaudio">
+            <source src={newCry} type="audio/ogg">
+            Your browser does not support the audio element.
+          </audio>
+        </span>
+        <span>
+          <label for="volume">Old cry</label>
+          <audio controls class="myaudio">
+            <source src={oldCry} type="audio/ogg">
+            Your browser does not support the audio element.
+          </audio>
+          </span> 
+      </div>
+    </div>
+  </section>
+</RootLayout>
+
+<script>
+  // Obtén todos los elementos de audio con la clase "myaudio" y conviértelos en un array
+  var audioElements = Array.from(document.getElementsByClassName("myaudio"));
+
+  // Usa forEach para iterar sobre los elementos de audio y establecer el volumen
+  audioElements.forEach((audioElement) => {
+    (audioElement as HTMLAudioElement).volume = 0.2; // Ajusta el valor del volumen entre 0.0 y 1.0
+  });
+
+  console.log({ audioElements });
+</script>

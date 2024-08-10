@@ -1,16 +1,25 @@
 ---
-let title = "Mi primer sitio web con Astro";
----
+import PokemonCard from "../components/pokemons/PokemonCard.astro";
+import type { PokemonListResponse } from "../interfaces/pokemon-list.response";
+import RootLayout from "../layouts/RootLayout.astro";
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>{title}</h1>
-	</body>
-</html>
+let title = "Astro-Pokemon";
+
+
+const res = await fetch("https://pokeapi.co/api/v2/pokemon");
+const data = (await res.json()) as PokemonListResponse;
+
+---
+<RootLayout title={title}>
+	<h1 class="font-bold">{title}</h1>
+	<hr/>
+
+	<section
+		aria-label="Pokemon list"
+		class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4"
+	>
+		{data.results.map((pokemon) => (
+			<PokemonCard name={pokemon.name} url={pokemon.url} />
+		))}
+	</section>
+</RootLayout>
