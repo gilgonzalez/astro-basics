@@ -2,12 +2,13 @@
 interface Props {
   name: string;
   url:  string;
-  pokemonId: string;
+  pokemonId?: string;
   isolated?: boolean;
 }
 
 const { name, url,pokemonId, isolated = false } = Astro.props;
 const id = url.split("/")[6];
+
 ---
 <a
   id={pokemonId}
